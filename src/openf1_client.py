@@ -43,6 +43,8 @@ def _request(endpoint, params):
             print(f"  HTTP {r.status_code}, retry {attempt}/{MAX_RETRIES}")
             time.sleep(2 ** attempt)
             continue
+        if r.status_code == 401:
+            raise RuntimeError("OpenF1 is locked during a live F1 session. Try again after it ends.")
         if r.status_code == 404:
             return []  # OpenF1 answers 404 when a filter matches nothing
         r.raise_for_status()
